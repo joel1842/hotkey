@@ -1,0 +1,223 @@
+{
+  "name": "hotkey",
+  "displayName": "Hotkey",
+  "description": "Five hotkeys for the code you are writing: scaffold it, import what it needs, wire it up, break it into its own file, or clean it up. Bring your own key \u2014 Anthropic or OpenAI.",
+  "version": "0.0.1",
+  "publisher": "hotkey",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.96.0",
+    "node": ">=20"
+  },
+  "categories": [
+    "Programming Languages",
+    "Machine Learning",
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "hotkey.scaffold",
+        "title": "Scaffold What You Are Writing",
+        "category": "Hotkey"
+      },
+      {
+        "command": "hotkey.import",
+        "title": "Import What the Selection Needs",
+        "category": "Hotkey"
+      },
+      {
+        "command": "hotkey.wire",
+        "title": "Wire Up the Selection",
+        "category": "Hotkey"
+      },
+      {
+        "command": "hotkey.breakout",
+        "title": "Break the Selection Into Its Own File",
+        "category": "Hotkey"
+      },
+      {
+        "command": "hotkey.uncleBobify",
+        "title": "Uncle Bobify the Selection",
+        "category": "Hotkey"
+      },
+      {
+        "command": "hotkey.selectModel",
+        "title": "Select Model",
+        "category": "Hotkey"
+      },
+      {
+        "command": "hotkey.selectProvider",
+        "title": "Select Provider",
+        "category": "Hotkey"
+      },
+      {
+        "command": "hotkey.setApiKey",
+        "title": "Set API Key",
+        "category": "Hotkey"
+      },
+      {
+        "command": "hotkey.clearApiKey",
+        "title": "Clear API Key",
+        "category": "Hotkey"
+      },
+      {
+        "command": "hotkey.showOutput",
+        "title": "Show Streamed Output",
+        "category": "Hotkey"
+      },
+      {
+        "command": "hotkey.showLog",
+        "title": "Show Log",
+        "category": "Hotkey"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "hotkey.scaffold",
+        "key": "ctrl+alt+s",
+        "mac": "cmd+ctrl+s",
+        "when": "editorTextFocus && !editorReadonly"
+      },
+      {
+        "command": "hotkey.import",
+        "key": "ctrl+alt+i",
+        "mac": "cmd+ctrl+i",
+        "when": "editorTextFocus && !editorReadonly"
+      },
+      {
+        "command": "hotkey.wire",
+        "key": "ctrl+alt+w",
+        "mac": "cmd+ctrl+w",
+        "when": "editorTextFocus && !editorReadonly"
+      },
+      {
+        "command": "hotkey.breakout",
+        "key": "ctrl+alt+b",
+        "mac": "cmd+ctrl+b",
+        "when": "editorTextFocus && !editorReadonly"
+      },
+      {
+        "command": "hotkey.uncleBobify",
+        "key": "ctrl+alt+u",
+        "mac": "cmd+ctrl+u",
+        "when": "editorTextFocus && !editorReadonly"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "hotkey.scaffold",
+          "when": "editorTextFocus && !editorReadonly",
+          "group": "1_modification@100"
+        },
+        {
+          "command": "hotkey.import",
+          "when": "editorTextFocus && !editorReadonly",
+          "group": "1_modification@101"
+        },
+        {
+          "command": "hotkey.wire",
+          "when": "editorTextFocus && !editorReadonly",
+          "group": "1_modification@102"
+        },
+        {
+          "command": "hotkey.breakout",
+          "when": "editorTextFocus && !editorReadonly",
+          "group": "1_modification@103"
+        },
+        {
+          "command": "hotkey.uncleBobify",
+          "when": "editorTextFocus && !editorReadonly",
+          "group": "1_modification@104"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Hotkey",
+      "properties": {
+        "hotkey.provider": {
+          "type": "string",
+          "default": "anthropic",
+          "enum": [
+            "anthropic",
+            "openai"
+          ],
+          "enumDescriptions": [
+            "Anthropic Messages API (Claude models).",
+            "OpenAI Responses API (GPT and o-series models)."
+          ],
+          "markdownDescription": "Which API to call. Each provider keeps its own API key and its own remembered model."
+        },
+        "hotkey.models": {
+          "type": "object",
+          "default": {
+            "anthropic": "claude-opus-5",
+            "openai": "gpt-5.5"
+          },
+          "additionalProperties": {
+            "type": "string"
+          },
+          "markdownDescription": "Model ID to use per provider, keyed by provider ID. Run **Hotkey: Select Model** to pick from the models your key can access."
+        },
+        "hotkey.effort": {
+          "type": "string",
+          "default": "high",
+          "enum": [
+            "default",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "markdownDescription": "How much reasoning and token spend the model puts into an edit. Sent as `output_config.effort` on Anthropic and `reasoning.effort` on OpenAI; `default` omits it entirely, which non-reasoning models require."
+        },
+        "hotkey.adaptiveThinking": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Anthropic only: send `thinking: adaptive`. Supported on Claude 4.6 and newer; turn it off for older models. Ignored by OpenAI, which is tuned through `hotkey.effort` alone."
+        },
+        "hotkey.maxTokens": {
+          "type": "number",
+          "default": 64000,
+          "minimum": 1024,
+          "description": "Ceiling on the generated replacement (`max_tokens` on Anthropic, `max_output_tokens` on OpenAI). An edit that hits the cap is reported instead of applied."
+        },
+        "hotkey.includeDiagnostics": {
+          "type": "boolean",
+          "default": true,
+          "description": "Send the file's errors and warnings with the request. This is what lets Import work out which symbol is unresolved."
+        },
+        "hotkey.systemPromptSuffix": {
+          "type": "string",
+          "default": "",
+          "editPresentation": "multilineText",
+          "description": "House rules appended to the system prompt of all three actions."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.js --production",
+    "watch": "node esbuild.js --watch",
+    "typecheck": "tsc --noEmit",
+    "vscode:prepublish": "npm run typecheck && npm run build",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.123.0",
+    "openai": "^7.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/vscode": "^1.96.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.7.0"
+  }
+}
