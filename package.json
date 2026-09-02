@@ -5,6 +5,10 @@
   "version": "0.0.1",
   "publisher": "hotkey",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joel1842/hotkey.git"
+  },
   "private": true,
   "engines": {
     "vscode": "^1.96.0",
@@ -208,7 +212,7 @@
     "watch": "node esbuild.js --watch",
     "typecheck": "tsc --noEmit",
     "vscode:prepublish": "npm run typecheck && npm run build",
-    "package": "vsce package"
+    "package": "npx --yes @vscode/vsce package"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.123.0",
