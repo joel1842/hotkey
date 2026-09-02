@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { log } from '../log';
+import { formatTokens } from './tokens';
 import {
   ModelProvider,
   ProviderInfo,
@@ -143,10 +144,6 @@ function describeLimits(model: Anthropic.ModelInfo): string | undefined {
     parts.push(`${formatTokens(model.max_tokens)} max output`);
   }
   return parts.length > 0 ? parts.join(' · ') : undefined;
-}
-
-function formatTokens(count: number): string {
-  return count >= 1_000_000 ? `${count / 1_000_000}M` : `${Math.round(count / 1000)}K`;
 }
 
 function isUnsupportedTuningError(error: unknown): boolean {

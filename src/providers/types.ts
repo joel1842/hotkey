@@ -1,4 +1,4 @@
-export type ProviderId = 'anthropic' | 'openai';
+export type ProviderId = 'anthropic' | 'openai' | 'gemini';
 
 export type Effort = 'default' | 'low' | 'medium' | 'high' | 'xhigh' | 'max';
 

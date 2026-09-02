@@ -1,7 +1,7 @@
 {
   "name": "hotkey",
   "displayName": "Hotkey",
-  "description": "Five hotkeys for the code you are writing: scaffold it, import what it needs, wire it up, break it into its own file, or clean it up. Bring your own key \u2014 Anthropic or OpenAI.",
+  "description": "Five hotkeys for the code you are writing: scaffold it, import what it needs, wire it up, break it into its own file, or clean it up. Bring your own key — Anthropic, OpenAI, or Gemini.",
   "version": "0.0.1",
   "publisher": "hotkey",
   "license": "MIT",
@@ -150,11 +150,13 @@
           "default": "anthropic",
           "enum": [
             "anthropic",
-            "openai"
+            "openai",
+            "gemini"
           ],
           "enumDescriptions": [
             "Anthropic Messages API (Claude models).",
-            "OpenAI Responses API (GPT and o-series models)."
+            "OpenAI Responses API (GPT and o-series models).",
+            "Google Gemini API (Gemini models)."
           ],
           "markdownDescription": "Which API to call. Each provider keeps its own API key and its own remembered model."
         },
@@ -162,7 +164,8 @@
           "type": "object",
           "default": {
             "anthropic": "claude-opus-5",
-            "openai": "gpt-5.5"
+            "openai": "gpt-5.5",
+            "gemini": "gemini-pro-latest"
           },
           "additionalProperties": {
             "type": "string"
@@ -180,18 +183,18 @@
             "xhigh",
             "max"
           ],
-          "markdownDescription": "How much reasoning and token spend the model puts into an edit. Sent as `output_config.effort` on Anthropic and `reasoning.effort` on OpenAI; `default` omits it entirely, which non-reasoning models require."
+          "markdownDescription": "How much reasoning and token spend the model puts into an edit. Sent as `output_config.effort` on Anthropic, `reasoning.effort` on OpenAI, and `thinkingConfig.thinkingLevel` on Gemini \u2014 which has no level above `high`, so `xhigh` and `max` clamp to it. `default` omits it entirely, which non-reasoning models require."
         },
         "hotkey.adaptiveThinking": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Anthropic only: send `thinking: adaptive`. Supported on Claude 4.6 and newer; turn it off for older models. Ignored by OpenAI, which is tuned through `hotkey.effort` alone."
+          "markdownDescription": "Anthropic only: send `thinking: adaptive`. Supported on Claude 4.6 and newer; turn it off for older models. Ignored by OpenAI and Gemini, which are tuned through `hotkey.effort` alone."
         },
         "hotkey.maxTokens": {
           "type": "number",
           "default": 64000,
           "minimum": 1024,
-          "description": "Ceiling on the generated replacement (`max_tokens` on Anthropic, `max_output_tokens` on OpenAI). An edit that hits the cap is reported instead of applied."
+          "description": "Ceiling on the generated replacement (`max_tokens` on Anthropic, `max_output_tokens` on OpenAI, `maxOutputTokens` on Gemini). An edit that hits the cap is reported instead of applied."
         },
         "hotkey.includeDiagnostics": {
           "type": "boolean",
@@ -216,6 +219,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.123.0",
+    "@google/genai": "^2.20.0",
     "openai": "^7.9.0"
   },
   "devDependencies": {
